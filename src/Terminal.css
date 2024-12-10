@@ -1,0 +1,198 @@
+/* Import Fira Code from Google Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap");
+
+/* Global styles */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: "Fira Code", monospace;
+  font-weight: 500; /* Universal font weight */
+  background-color: #300a24; /* Ubuntu terminal background */
+  color: #d3d7cf; /* Light gray text */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Terminal container */
+.terminal {
+  width: min(90%, 1200px); /* Max 1200px, responsive width */
+  min-width: 600px;
+  margin-top: 2%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 90%; /* Limit height to prevent overflow */
+  height: auto; /* No fixed height initially */
+}
+
+/* History container */
+#history-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-bottom: 5px;
+  max-height: 100%;
+  scrollbar-width: none; /* Hide default scrollbar for Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+#history-container::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for WebKit browsers */
+}
+
+/* Individual history items */
+.history-item {
+  word-wrap: break-word;
+  white-space: pre-wrap; /* Preserve formatting */
+}
+
+/* Prompt components */
+.prompt-container {
+  display: flex;
+  align-items: center;
+}
+
+input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #fff; /* Match terminal text */
+  outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  margin-left: 15px; /* Add space between $ and user input */
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.3); /* Subtle lighter color */
+  font-weight: 300; /* Lighter font weight */
+}
+
+/* Prompt and history formatting */
+.username {
+  color: #28855c; /* Green for username */
+}
+
+.tilde {
+  color: #0a4289; /* Blue for tilde (~) */
+}
+
+.separator {
+  color: #ffffff; /* White for colon and $ */
+}
+
+/* Shimmering effect for the h1 text */
+.shimmering-title-old {
+  font-size: 16px;
+  font-family: "Fira Code", monospace;
+  font-weight: 500;
+  display: inline-block;
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #fff8dc); /* Gold and lighter gold only */
+  background-size: 300% 100%; /* Increased the size for a more pronounced shimmer effect */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmerGradient 4s linear infinite; /* Shortened the animation duration for quicker shimmer */
+}
+
+/* Shimmer animation */
+@keyframes shimmerGradient-old {
+  0% {
+    background-position: 300% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 300% 0;
+  }
+}
+
+/* Glow effect on key press, with an even more subtle glow */
+.glowing-old {
+  text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
+    0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
+  animation: glowingEffect 1s ease-out 1; /* Animation applied once on keypress */
+  transition: text-shadow 0.2s ease-in-out; /* Subtle transition for glow fading out */
+}
+
+/* Define subtle glowing effect animation */
+@keyframes glowingEffect-old {
+  0% {
+    text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
+      0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
+  }
+  50% {
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.3), 0 0 4px rgba(255, 215, 0, 0.25), 0 0 6px rgba(255, 215, 0, 0.2),
+      0 0 2px rgba(255, 243, 204, 0.3), 0 0 4px rgba(255, 243, 204, 0.25), 0 0 6px rgba(255, 243, 204, 0.2);
+  }
+  100% {
+    text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
+      0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
+  }
+}
+
+/* Default style for the h1 */
+.shimmering-title {
+  font-size: 16px;
+  font-family: "Fira Code", monospace;
+  font-weight: 500;
+  color: #ffd700; /* Default gold color */
+  display: inline-block;
+  /* transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out; */
+}
+
+/* Glow effect on key press, with subtle lighter gold glow */
+.glowing {
+  color: #ffec70; /* Lighter gold color on keypress */
+  text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2); /* Subtle glowing effect */
+  transition: text-shadow 150ms ease-in-out; /* Smooth transition for glow */
+}
+
+/* Apply smooth glowing effect when a key is pressed */
+@keyframes glowingEffect {
+  0% {
+    color: #ffd700; /* Gold */
+    text-shadow: none;
+  }
+  50% {
+    color: #ffec70; /* Lighter gold */
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2); /* Light gold glow */
+  }
+  100% {
+    color: #ffd700; /* Gold */
+    text-shadow: none;
+  }
+}
+
+/* Custom scrollbar styles */
+#history-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+#history-container::-webkit-scrollbar-track {
+  background: #300a24; /* Match terminal background */
+}
+
+#history-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1); /* Subtle scrollbar color */
+  border-radius: 5px;
+}
+
+#history-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3); /* Highlighted scrollbar on hover */
+}
