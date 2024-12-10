@@ -76,6 +76,7 @@ input {
   font-family: inherit;
   font-size: 1rem;
   margin-left: 15px; /* Add space between $ and user input */
+  width: auto; /* Adjust input width dynamically */
 }
 
 input::placeholder {
@@ -97,20 +98,22 @@ input::placeholder {
 }
 
 /* Shimmering effect for the h1 text */
-.shimmering-title-old {
+.shimmering-title {
   font-size: 16px;
   font-family: "Fira Code", monospace;
   font-weight: 500;
+  color: #ffd700; /* Default gold color */
   display: inline-block;
   background: linear-gradient(90deg, #fff8dc, #ffd700, #fff8dc); /* Gold and lighter gold only */
   background-size: 300% 100%; /* Increased the size for a more pronounced shimmer effect */
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: shimmerGradient 4s linear infinite; /* Shortened the animation duration for quicker shimmer */
 }
 
 /* Shimmer animation */
-@keyframes shimmerGradient-old {
+@keyframes shimmerGradient {
   0% {
     background-position: 300% 0;
   }
@@ -120,40 +123,6 @@ input::placeholder {
   100% {
     background-position: 300% 0;
   }
-}
-
-/* Glow effect on key press, with an even more subtle glow */
-.glowing-old {
-  text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
-    0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
-  animation: glowingEffect 1s ease-out 1; /* Animation applied once on keypress */
-  transition: text-shadow 0.2s ease-in-out; /* Subtle transition for glow fading out */
-}
-
-/* Define subtle glowing effect animation */
-@keyframes glowingEffect-old {
-  0% {
-    text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
-      0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
-  }
-  50% {
-    text-shadow: 0 0 2px rgba(255, 215, 0, 0.3), 0 0 4px rgba(255, 215, 0, 0.25), 0 0 6px rgba(255, 215, 0, 0.2),
-      0 0 2px rgba(255, 243, 204, 0.3), 0 0 4px rgba(255, 243, 204, 0.25), 0 0 6px rgba(255, 243, 204, 0.2);
-  }
-  100% {
-    text-shadow: 0 0 1px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 215, 0, 0.15), 0 0 3px rgba(255, 215, 0, 0.1),
-      0 0 1px rgba(255, 243, 204, 0.2), 0 0 2px rgba(255, 243, 204, 0.15), 0 0 3px rgba(255, 243, 204, 0.1);
-  }
-}
-
-/* Default style for the h1 */
-.shimmering-title {
-  font-size: 16px;
-  font-family: "Fira Code", monospace;
-  font-weight: 500;
-  color: #ffd700; /* Default gold color */
-  display: inline-block;
-  /* transition: color 0.3s ease-in-out, text-shadow 0.3s ease-in-out; */
 }
 
 /* Glow effect on key press, with subtle lighter gold glow */
@@ -195,4 +164,26 @@ input::placeholder {
 
 #history-container::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3); /* Highlighted scrollbar on hover */
+}
+
+/* Ensure the username edit input is aligned with the prompt */
+.username-edit {
+  display: flex; /* Ensures the > and the input are aligned */
+  align-items: center; /* Vertically center the input with the prompt */
+}
+
+input {
+  font-size: 1rem;
+  font-family: inherit;
+  color: #fff;
+  background: none;
+  border: none;
+  outline: none;
+  margin-left: 5px;
+  width: auto; /* Adjust input width dynamically */
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.3); /* Subtle lighter color for placeholder */
+  font-weight: 300; /* Lighter font weight */
 }
