@@ -1,5 +1,5 @@
 /* Import Fira Code from Google Fonts */
-@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@200;300;400;500;600&display=swap");
 
 /* Global styles */
 html,
@@ -9,8 +9,8 @@ body {
   width: 100%;
   height: 100%;
   font-family: "Fira Code", monospace;
-  font-weight: 500; /* Universal font weight */
-  background-color: #300a24; /* Ubuntu terminal background */
+  font-weight: 500;
+  background-color: #300a24; /* Terminal background */
   color: #d3d7cf; /* Light gray text */
   display: flex;
   justify-content: center;
@@ -34,8 +34,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  max-height: 90%; /* Limit height to prevent overflow */
-  height: auto; /* No fixed height initially */
+  max-height: 90%; /* Prevent overflow */
 }
 
 /* History container */
@@ -55,7 +54,7 @@ body {
   display: none; /* Hide scrollbar for WebKit browsers */
 }
 
-/* Individual history items */
+/* History item */
 .history-item {
   word-wrap: break-word;
   white-space: pre-wrap; /* Preserve formatting */
@@ -67,6 +66,23 @@ body {
   align-items: center;
 }
 
+.history-prompt,
+.prompt .username {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 0; /* Remove space between username and colon */
+}
+
+.prompt .separator,
+.history-prompt .separator {
+  margin-left: 0; /* No space after the separator */
+}
+
+.history-item .separator:last-child {
+  margin-right: 15px; /* Add margin after dollar sign in history */
+}
+
+/* Input styles */
 input {
   flex: 1;
   background: none;
@@ -75,16 +91,16 @@ input {
   outline: none;
   font-family: inherit;
   font-size: 1rem;
-  margin-left: 15px; /* Add space between $ and user input */
-  width: auto; /* Adjust input width dynamically */
+  margin-left: 15px; /* Space between $ and user input */
+  width: auto;
 }
 
 input::placeholder {
-  color: rgba(255, 255, 255, 0.3); /* Subtle lighter color */
+  color: rgba(255, 255, 255, 0.3); /* Subtle lighter placeholder */
   font-weight: 300; /* Lighter font weight */
 }
 
-/* Prompt and history formatting */
+/* Username styling */
 .username {
   color: #28855c; /* Green for username */
 }
@@ -97,19 +113,24 @@ input::placeholder {
   color: #ffffff; /* White for colon and $ */
 }
 
-/* Shimmering effect for the h1 text */
+/* Username change message */
+.system-message {
+  color: #3399ff; /* Blue color for system message */
+  font-weight: 200; /* Lighter font weight */
+}
+
+/* Shimmering effect for h1 text */
 .shimmering-title {
   font-size: 16px;
-  font-family: "Fira Code", monospace;
   font-weight: 500;
-  color: #ffd700; /* Default gold color */
+  color: #ffd700; /* Gold color */
   display: inline-block;
-  background: linear-gradient(90deg, #fff8dc, #ffd700, #fff8dc); /* Gold and lighter gold only */
-  background-size: 300% 100%; /* Increased the size for a more pronounced shimmer effect */
+  background: linear-gradient(90deg, #fff8dc, #ffd700, #fff8dc); /* Gold gradient */
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmerGradient 4s linear infinite; /* Shortened the animation duration for quicker shimmer */
+  animation: shimmerGradient 4s linear infinite;
 }
 
 /* Shimmer animation */
@@ -125,27 +146,11 @@ input::placeholder {
   }
 }
 
-/* Glow effect on key press, with subtle lighter gold glow */
+/* Glow effect on key press */
 .glowing {
   color: #ffec70; /* Lighter gold color on keypress */
-  text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2); /* Subtle glowing effect */
-  transition: text-shadow 150ms ease-in-out; /* Smooth transition for glow */
-}
-
-/* Apply smooth glowing effect when a key is pressed */
-@keyframes glowingEffect {
-  0% {
-    color: #ffd700; /* Gold */
-    text-shadow: none;
-  }
-  50% {
-    color: #ffec70; /* Lighter gold */
-    text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2); /* Light gold glow */
-  }
-  100% {
-    color: #ffd700; /* Gold */
-    text-shadow: none;
-  }
+  text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2);
+  transition: text-shadow 150ms ease-in-out; /* Smooth transition */
 }
 
 /* Custom scrollbar styles */
@@ -166,24 +171,8 @@ input::placeholder {
   background: rgba(255, 255, 255, 0.3); /* Highlighted scrollbar on hover */
 }
 
-/* Ensure the username edit input is aligned with the prompt */
+/* Username edit prompt alignment */
 .username-edit {
-  display: flex; /* Ensures the > and the input are aligned */
-  align-items: center; /* Vertically center the input with the prompt */
-}
-
-input {
-  font-size: 1rem;
-  font-family: inherit;
-  color: #fff;
-  background: none;
-  border: none;
-  outline: none;
-  margin-left: 5px;
-  width: auto; /* Adjust input width dynamically */
-}
-
-input::placeholder {
-  color: rgba(255, 255, 255, 0.3); /* Subtle lighter color for placeholder */
-  font-weight: 300; /* Lighter font weight */
+  display: flex;
+  align-items: center;
 }
