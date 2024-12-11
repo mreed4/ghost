@@ -15,7 +15,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow: hidden;
+  overflow-y: scroll; /* Enable scrolling for body */
 }
 
 #root {
@@ -33,8 +33,7 @@ body {
   margin-top: 2%;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  max-height: 90%; /* Prevent overflow */
+  overflow: hidden; /* Prevent terminal overflow */
 }
 
 /* History container */
@@ -43,8 +42,6 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  padding-bottom: 5px;
   max-height: 100%;
   scrollbar-width: none; /* Hide default scrollbar for Firefox */
   -ms-overflow-style: none; /* IE and Edge */
