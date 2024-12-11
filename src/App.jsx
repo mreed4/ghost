@@ -1,5 +1,5 @@
-import TerminalContainer from "./TerminalContainer";
+import Terminal from "./components/Terminal";
 
-const App = () => <TerminalContainer />;
+const App = () => <Terminal />;
 
 export default App;
