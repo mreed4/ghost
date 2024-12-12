@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 import "../Terminal.css";
 import useTerminalLogic from "./TerminalLogic";
 

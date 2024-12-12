@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 // TerminalLogic.js
 import { useState, useRef, useEffect } from "react";
 
@@ -24,7 +25,7 @@ const useTerminalLogic = () => {
   };
 
   const commandHandlers = {
-    clear: () => setHistory([]),
+    "clear": () => setHistory([]),
     "username edit": () => {
       setEditingUsername(true);
       setHistory((prev) => [...prev, { prompt: `${username}@ghost:~$`, command: "username edit", submittedUsername: username }]);
