@@ -1,6 +1,10 @@
 /* Import Fira Code from Google Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@200;300;400;500;600&display=swap");
 
+* {
+  font-size: 1em;
+}
+
 /* Global styles */
 html,
 body {
@@ -15,7 +19,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  overflow-y: scroll; /* Enable scrolling for body */
 }
 
 #root {
@@ -87,7 +90,6 @@ input {
   color: #fff; /* Match terminal text */
   outline: none;
   font-family: inherit;
-  font-size: 1rem;
   margin-left: 15px; /* Space between $ and user input */
   width: auto;
 }
@@ -118,7 +120,6 @@ input::placeholder {
 
 /* Shimmering effect for h1 text */
 .shimmering-title {
-  font-size: 16px;
   font-weight: 500;
   color: #ffd700; /* Gold color */
   display: inline-block;
@@ -150,26 +151,9 @@ input::placeholder {
   transition: text-shadow 150ms ease-in-out; /* Smooth transition */
 }
 
-/* Custom scrollbar styles */
-#history-container::-webkit-scrollbar {
-  width: 10px;
-}
-
-#history-container::-webkit-scrollbar-track {
-  background: #300a24; /* Match terminal background */
-}
-
-#history-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1); /* Subtle scrollbar color */
-  border-radius: 5px;
-}
-
-#history-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3); /* Highlighted scrollbar on hover */
-}
-
 /* Username edit prompt alignment */
 .username-edit {
   display: flex;
   align-items: center;
 }
+

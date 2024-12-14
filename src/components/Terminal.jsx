@@ -47,6 +47,7 @@ const Terminal = () => {
                 autoFocus
                 placeholder="Enter new username"
                 style={{ width: "auto", background: "none", border: "none", color: "#fff" }}
+                className="input-block-cursor"
               />
             </form>
           </div>
@@ -69,6 +70,7 @@ const Terminal = () => {
             onChange={(e) => setInputValue(e.target.value)}
             autoFocus
             placeholder="Type a command"
+            className="input-block-cursor"
           />
         </form>
       </div>
