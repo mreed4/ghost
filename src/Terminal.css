@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@200;300;400;500;600&display=swap");
 
 * {
-  font-size: 1em;
+  font-size: 14px;
 }
 
 /* Global styles */
@@ -13,7 +13,7 @@ body {
   width: 100%;
   height: 100%;
   font-family: "Fira Code", monospace;
-  font-weight: 500;
+  font-weight: 400;
   background-color: #300a24; /* Terminal background */
   color: #d3d7cf; /* Light gray text */
   display: flex;
@@ -116,6 +116,7 @@ input::placeholder {
 .system-message {
   color: #3399ff; /* Blue color for system message */
   font-weight: 200; /* Lighter font weight */
+  font-style: italic;
 }
 
 /* Shimmering effect for h1 text */
@@ -123,7 +124,12 @@ input::placeholder {
   font-weight: 500;
   color: #ffd700; /* Gold color */
   display: inline-block;
-  background: linear-gradient(90deg, #fff8dc, #ffd700, #fff8dc); /* Gold gradient */
+  background: linear-gradient(
+    90deg,
+    #fff8dc,
+    #ffd700,
+    #fff8dc
+  ); /* Gold gradient */
   background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -147,13 +153,7 @@ input::placeholder {
 /* Glow effect on key press */
 .glowing {
   color: #ffec70; /* Lighter gold color on keypress */
-  text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3), 0 0 6px rgba(255, 215, 0, 0.2);
+  text-shadow: 0 0 2px rgba(255, 215, 0, 0.4), 0 0 4px rgba(255, 215, 0, 0.3),
+    0 0 6px rgba(255, 215, 0, 0.2);
   transition: text-shadow 150ms ease-in-out; /* Smooth transition */
 }
-
-/* Username edit prompt alignment */
-.username-edit {
-  display: flex;
-  align-items: center;
-}
-

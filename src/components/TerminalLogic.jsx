@@ -55,14 +55,20 @@ function useTerminalLogic() {
     "username new": () => {
       handleUsernameCommand("new");
     },
+    "username update": () => {
+      handleUsernameCommand("update");
+    },
     "username random": () => {
       handleUsernameCommand("random");
     },
-    "time": () => handleTimeCommand(),
+    "time": () => handleTimeCommand("time"),
+    "date": () => handleTimeCommand("date"),
+    "uptime": () => handleUptimeCommand(),
+    "test": () => handleTestCommand(),
   };
 
   function handleUsernameCommand(command) {
-    const commands = ["edit", "new", "change"];
+    const commands = ["edit", "new", "change", "update"];
 
     if (commands.includes(command)) {
       setEditingUsername(true);
@@ -110,14 +116,14 @@ function useTerminalLogic() {
     ]);
   }
 
-  const handleTimeCommand = () => {
+  const handleTimeCommand = (command) => {
     const now = new Date();
     const formattedTime = now.toLocaleString();
     setHistory((prev) => [
       ...prev,
       {
         prompt: `${username}@ghost:~$`,
-        command: "time",
+        command: `${command}`,
         submittedUsername: username,
       },
       {
@@ -128,8 +134,8 @@ function useTerminalLogic() {
     ]);
   };
 
+  // eslint-disable-next-line no-unused-vars
   function handleGeneralCommand(command) {
-    const result = evaluateExpression(command);
     setHistory((prev) => {
       const updatedHistory = [
         ...prev,
@@ -139,13 +145,6 @@ function useTerminalLogic() {
           submittedUsername: username,
         },
       ];
-      if (!isNaN(result)) {
-        updatedHistory.push({
-          prompt: "",
-          command: `Result: ${result}`,
-          isSystemMessage: true,
-        });
-      }
       return updatedHistory;
     });
   }
@@ -176,6 +175,53 @@ function useTerminalLogic() {
     inputRef.current.focus();
   }
 
+  const handleTestCommand = () => {
+    const cpuStatus = generateRandomCpuStatus();
+    const ramStatus = generateRandomRamStatus();
+    const storageStatus = generateRandomStorageStatus();
+    const networkStatus = generateRandomNetworkStatus();
+    const gpuStatus = generateRandomGpuStatus();
+    const overallStatus = `${cpuStatus}...${ramStatus}...${storageStatus}...${networkStatus}...${gpuStatus}`;
+    setHistory((prev) => [
+      ...prev,
+      {
+        prompt: `${username}@ghost:~$`,
+        command: "test",
+        submittedUsername: username,
+      },
+      {
+        prompt: "",
+        command: `Self-test results: ${overallStatus}`,
+        isSystemMessage: true,
+      },
+    ]);
+  };
+
+  const generateRandomCpuStatus = () => {
+    const statuses = ["Passed", "Failed"];
+    return `CPU: ${statuses[Math.floor(Math.random() * statuses.length)]}`;
+  };
+
+  const generateRandomRamStatus = () => {
+    const statuses = ["Passed", "Failed"];
+    return `RAM: ${statuses[Math.floor(Math.random() * statuses.length)]}`;
+  };
+
+  const generateRandomStorageStatus = () => {
+    const statuses = ["Passed", "Failed"];
+    return `Storage: ${statuses[Math.floor(Math.random() * statuses.length)]}`;
+  };
+
+  const generateRandomNetworkStatus = () => {
+    const statuses = ["Connected", "Disconnected"];
+    return `Network: ${statuses[Math.floor(Math.random() * statuses.length)]}`;
+  };
+
+  const generateRandomGpuStatus = () => {
+    const statuses = ["Enabled", "Disabled"];
+    return `GPU: ${statuses[Math.floor(Math.random() * statuses.length)]}`;
+  };
+
   // Utility Functions
   function generateRandomUsername() {
     return `user${Math.floor(Math.random() * 10000)}`;
@@ -190,6 +236,32 @@ function useTerminalLogic() {
       return "Error";
     }
   }
+
+  const handleUptimeCommand = () => {
+    const randomUptime = generateRandomUptime(); // Generate a random uptime
+    setHistory((prev) => [
+      ...prev,
+      {
+        prompt: `${username}@ghost:~$`,
+        command: "uptime",
+        submittedUsername: username,
+      },
+      {
+        prompt: "",
+        command: `System uptime (simulated): ${randomUptime}`,
+        isSystemMessage: true,
+      },
+    ]);
+  };
+
+  const generateRandomUptime = () => {
+    const days = Math.floor(Math.random() * 30); // Random days (0-29)
+    const hours = Math.floor(Math.random() * 24); // Random hours (0-23)
+    const minutes = Math.floor(Math.random() * 60); // Random minutes (0-59)
+    const seconds = Math.floor(Math.random() * 60); // Random seconds (0-59)
+
+    return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  };
 
   // Effects
   useEffect(() => {
