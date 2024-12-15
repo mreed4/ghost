@@ -30,7 +30,7 @@ function useTerminalLogic() {
     // Handle calculation commands
     if (command.startsWith("calc ")) {
       handleCalculation(command.slice(5).trim());
-      setInputValue("");
+      setInputValue(""); // Clear input only after processing
       return;
     }
 
@@ -41,19 +41,19 @@ function useTerminalLogic() {
 
   // Command Handlers
   const commandHandlers = {
-    "clear": function() {
+    "clear": () => {
       setHistory([]);
     },
-    "username edit": function() {
+    "username edit": () => {
       handleUsernameCommand("edit");
     },
-    "username change": function() {
+    "username change": () => {
       handleUsernameCommand("change");
     },
-    "username new": function() {
+    "username new": () => {
       handleUsernameCommand("new");
     },
-    "username random": function() {
+    "username random": () => {
       handleUsernameCommand("random");
     },
   };
@@ -67,17 +67,18 @@ function useTerminalLogic() {
         ...prev,
         { prompt: `${username}@ghost:~$`, command: `username ${command}`, submittedUsername: username },
       ]);
+      return;
     }
 
     if (command === "random") {
       const oldUsername = username;
       const newRandomUsername = generateRandomUsername();
-      setUsername(newRandomUsername);
       setHistory((prev) => [
         ...prev,
-        { prompt: `${username}@ghost:~$`, command: "username random", submittedUsername: username },
+        { prompt: `${oldUsername}@ghost:~$`, command: "username random", submittedUsername: oldUsername },
         { prompt: "", command: `Username changed randomly from ${oldUsername} to ${newRandomUsername}`, isUsernameChange: true },
       ]);
+      setUsername(newRandomUsername);
     }
   }
 
@@ -85,22 +86,45 @@ function useTerminalLogic() {
     const result = evaluateExpression(expression);
     setHistory((prev) => [
       ...prev,
-      { prompt: `${username}@ghost:~$`, command: inputValue, submittedUsername: username },
-      { prompt: "", command: `Result: ${result}`, isUsernameChange: true },
+      { prompt: `${username}@ghost:~$`, command: `calc ${expression}`, submittedUsername: username },
+      { prompt: "", command: `Result: ${result}`, isSystemMessage: true }, // Mark as a system message
     ]);
   }
 
   function handleGeneralCommand(command) {
     const result = evaluateExpression(command);
-    if (!isNaN(result)) {
-      setHistory((prev) => [
+    setHistory((prev) => {
+      const updatedHistory = [
         ...prev,
         { prompt: `${username}@ghost:~$`, command: inputValue, submittedUsername: username },
-        { prompt: "", command: `Result: ${result}`, isUsernameChange: true },
-      ]);
-    } else {
-      setHistory((prev) => [...prev, { prompt: `${username}@ghost:~$`, command: inputValue, submittedUsername: username }]);
-    }
+      ];
+      if (!isNaN(result)) {
+        updatedHistory.push({ prompt: "", command: `Result: ${result}`, isSystemMessage: true });
+      }
+      return updatedHistory;
+    });
+  }
+
+  // Username Change Handling
+  function handleUsernameChange(e) {
+    e.preventDefault();
+
+    const trimmedNewUsername = newUsername.trim();
+    if (!trimmedNewUsername) return;
+
+    const oldUsername = username;
+    setHistory((prev) => [
+      ...prev,
+      { prompt: `${oldUsername}@ghost:~$`, command: `Username changed from ${oldUsername} to ${trimmedNewUsername}`, isUsernameChange: true },
+    ]);
+    setUsername(trimmedNewUsername);
+    resetUsernameEditing();
+  }
+
+  function resetUsernameEditing() {
+    setEditingUsername(false);
+    setNewUsername("");
+    inputRef.current.focus();
   }
 
   // Utility Functions
@@ -115,22 +139,6 @@ function useTerminalLogic() {
       return result !== undefined ? result : "Error";
     } catch {
       return "Error";
-    }
-  }
-
-  // Username Change Handling
-  function handleUsernameChange(e) {
-    e.preventDefault();
-    if (newUsername.trim() !== "") {
-      const oldUsername = username;
-      setUsername(newUsername.trim());
-      setEditingUsername(false);
-      setNewUsername("");
-      inputRef.current.focus();
-      setHistory((prev) => [
-        ...prev,
-        { prompt: "", command: `Username changed from ${oldUsername} to ${newUsername.trim()}`, isUsernameChange: true },
-      ]);
     }
   }
 
