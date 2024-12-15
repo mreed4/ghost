@@ -1,16 +1,16 @@
 /* eslint-disable quote-props */
 // TerminalLogic.js
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from "react";
 
 function useTerminalLogic() {
   // State and Refs
   const [history, setHistory] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [username, setUsername] = useState(
     `user${Math.floor(Math.random() * 10000)}`
   );
   const [editingUsername, setEditingUsername] = useState(false);
-  const [newUsername, setNewUsername] = useState('');
+  const [newUsername, setNewUsername] = useState("");
 
   const inputRef = useRef(null);
   const terminalEndRef = useRef(null);
@@ -18,50 +18,51 @@ function useTerminalLogic() {
   // Core Command Handling
   function handleCommandSubmit(e) {
     e.preventDefault();
-    if (inputValue.trim() === '') return;
+    if (inputValue.trim() === "") return;
 
     const command = inputValue.trim().toLowerCase();
 
     // Handle known commands first
     if (commandHandlers[command]) {
       commandHandlers[command]();
-      setInputValue('');
+      setInputValue("");
       return;
     }
 
     // Handle calculation commands
-    if (command.startsWith('calc ')) {
+    if (command.startsWith("calc ")) {
       handleCalculation(command.slice(5).trim());
-      setInputValue(''); // Clear input only after processing
+      setInputValue(""); // Clear input only after processing
       return;
     }
 
     // Handle general command evaluation
     handleGeneralCommand(command);
-    setInputValue('');
+    setInputValue("");
   }
 
   // Command Handlers
   const commandHandlers = {
-    'clear': () => {
+    "clear": () => {
       setHistory([]);
     },
-    'username edit': () => {
-      handleUsernameCommand('edit');
+    "username edit": () => {
+      handleUsernameCommand("edit");
     },
-    'username change': () => {
-      handleUsernameCommand('change');
+    "username change": () => {
+      handleUsernameCommand("change");
     },
-    'username new': () => {
-      handleUsernameCommand('new');
+    "username new": () => {
+      handleUsernameCommand("new");
     },
-    'username random': () => {
-      handleUsernameCommand('random');
+    "username random": () => {
+      handleUsernameCommand("random");
     },
+    "time": () => handleTimeCommand(),
   };
 
   function handleUsernameCommand(command) {
-    const commands = ['edit', 'new', 'change'];
+    const commands = ["edit", "new", "change"];
 
     if (commands.includes(command)) {
       setEditingUsername(true);
@@ -76,18 +77,18 @@ function useTerminalLogic() {
       return;
     }
 
-    if (command === 'random') {
+    if (command === "random") {
       const oldUsername = username;
       const newRandomUsername = generateRandomUsername();
       setHistory((prev) => [
         ...prev,
         {
           prompt: `${oldUsername}@ghost:~$`,
-          command: 'username random',
+          command: "username random",
           submittedUsername: oldUsername,
         },
         {
-          prompt: '',
+          prompt: "",
           command: `Username changed randomly from ${oldUsername} to ${newRandomUsername}`,
           isUsernameChange: true,
         },
@@ -105,9 +106,27 @@ function useTerminalLogic() {
         command: `calc ${expression}`,
         submittedUsername: username,
       },
-      { prompt: '', command: `Result: ${result}`, isSystemMessage: true }, // Mark as a system message
+      { prompt: "", command: `Result: ${result}`, isSystemMessage: true }, // Mark as a system message
     ]);
   }
+
+  const handleTimeCommand = () => {
+    const now = new Date();
+    const formattedTime = now.toLocaleString();
+    setHistory((prev) => [
+      ...prev,
+      {
+        prompt: `${username}@ghost:~$`,
+        command: "time",
+        submittedUsername: username,
+      },
+      {
+        prompt: "",
+        command: `Current date and time: ${formattedTime}`,
+        isSystemMessage: true, // Mark as a system message
+      },
+    ]);
+  };
 
   function handleGeneralCommand(command) {
     const result = evaluateExpression(command);
@@ -122,7 +141,7 @@ function useTerminalLogic() {
       ];
       if (!isNaN(result)) {
         updatedHistory.push({
-          prompt: '',
+          prompt: "",
           command: `Result: ${result}`,
           isSystemMessage: true,
         });
@@ -153,7 +172,7 @@ function useTerminalLogic() {
 
   function resetUsernameEditing() {
     setEditingUsername(false);
-    setNewUsername('');
+    setNewUsername("");
     inputRef.current.focus();
   }
 
@@ -164,17 +183,17 @@ function useTerminalLogic() {
 
   function evaluateExpression(expression) {
     try {
-      const sanitizedExpression = expression.replace(/[^0-9+\-*/(). ]/g, '');
+      const sanitizedExpression = expression.replace(/[^0-9+\-*/(). ]/g, "");
       const result = eval(sanitizedExpression);
-      return result !== undefined ? result : 'Error';
+      return result !== undefined ? result : "Error";
     } catch {
-      return 'Error';
+      return "Error";
     }
   }
 
   // Effects
   useEffect(() => {
-    terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history, editingUsername]);
 
   // Return Values

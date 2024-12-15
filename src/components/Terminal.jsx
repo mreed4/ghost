@@ -1,7 +1,7 @@
-import '../Terminal.css';
-import { TerminalProvider } from '../context/TerminalContext';
-import TerminalHistory from './TerminalHistory';
-import TerminalPrompt from './TerminalPrompt';
+import "../Terminal.css";
+import { TerminalProvider } from "../context/TerminalContext";
+import TerminalHistory from "./TerminalHistory";
+import TerminalPrompt from "./TerminalPrompt";
 
 const Terminal = () => {
   return (

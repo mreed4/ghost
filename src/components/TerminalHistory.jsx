@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable quote-props */
-import { useTerminalContext } from '../context/TerminalContext';
+import { useTerminalContext } from "../context/TerminalContext";
 
 function TerminalHistory() {
   const { history, editingUsername, terminalEndRef } = useTerminalContext();
@@ -49,7 +49,7 @@ function UsernameEditForm() {
       <span className="username">&gt;</span>
       <form
         onSubmit={handleUsernameChange}
-        style={{ display: 'inline-flex', alignItems: 'center' }}
+        style={{ display: "inline-flex", alignItems: "center" }}
       >
         <input
           type="text"
@@ -58,10 +58,10 @@ function UsernameEditForm() {
           autoFocus
           placeholder="Enter new username"
           style={{
-            width: 'auto',
-            background: 'none',
-            border: 'none',
-            color: '#fff',
+            width: "auto",
+            background: "none",
+            border: "none",
+            color: "#fff",
           }}
           className="input-block-cursor"
         />
