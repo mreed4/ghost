@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable quote-props */
+// TerminalHistory
 import { useTerminalContext } from "../context/TerminalContext";
 
 function TerminalHistory() {
@@ -21,8 +22,9 @@ function TerminalHistory() {
 function HistoryItem({ item }) {
   const { username } = useTerminalContext();
 
-  if (item.isUsernameChange || item.isSystemMessage) {
-    return <div className={`history-item system-message`}>{item.command}</div>;
+  if (item.isSystemMessage) {
+    // Render system messages (including formatted grids for the `help` command)
+    return <pre className="history-item system-message">{item.command}</pre>;
   }
 
   return (

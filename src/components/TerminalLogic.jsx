@@ -43,6 +43,7 @@ function useTerminalLogic() {
 
   // Command Handlers
   const commandHandlers = {
+    // "calc" -- see function handleCalculation
     "clear": () => {
       setHistory([]);
     },
@@ -65,6 +66,43 @@ function useTerminalLogic() {
     "date": () => handleTimeCommand("date"),
     "uptime": () => handleUptimeCommand(),
     "test": () => handleTestCommand(),
+    "help": () => {
+      // Get the available commands and sort them alphabetically
+      const availableCommands = Object.keys(commandHandlers).sort();
+
+      // Define the number of columns for the grid
+      const columns = 3;
+
+      // Calculate the max width of commands for uniform spacing
+      const maxCommandLength = Math.max(
+        ...availableCommands.map((cmd) => cmd.length)
+      );
+      const paddedCommands = availableCommands.map((cmd) =>
+        cmd.padEnd(maxCommandLength, " ")
+      );
+
+      // Build the grid using rows and columns
+      let grid = "";
+      for (let i = 0; i < paddedCommands.length; i += columns) {
+        const row = paddedCommands.slice(i, i + columns).join("  "); // Add spacing between columns
+        grid += row + "\n";
+      }
+
+      // Add the grid to the terminal history
+      setHistory((prev) => [
+        ...prev,
+        {
+          prompt: `${username}@ghost:~$`,
+          command: "help",
+          submittedUsername: username,
+        },
+        {
+          prompt: "",
+          command: grid.trimEnd(), // Trim any trailing newline
+          isSystemMessage: true,
+        },
+      ]);
+    },
   };
 
   function handleUsernameCommand(command) {
@@ -191,7 +229,7 @@ function useTerminalLogic() {
       },
       {
         prompt: "",
-        command: `Self-test results: ${overallStatus}`,
+        command: `Self-test results (simulated): ${overallStatus}`,
         isSystemMessage: true,
       },
     ]);
