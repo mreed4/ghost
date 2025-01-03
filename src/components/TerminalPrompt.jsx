@@ -1,4 +1,5 @@
 /* eslint-disable quote-props */
+// TerminalPrompt
 import { useTerminalContext } from "../context/TerminalContext";
 
 function TerminalPrompt() {
