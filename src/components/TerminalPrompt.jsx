@@ -3,6 +3,15 @@
 import { useTerminalContext } from "../context/TerminalContext";
 
 function TerminalPrompt() {
+  const { editingUsername, awaitingTypoConfirmation } = useTerminalContext();
+
+  // Hide the regular prompt when an interactive input form is active
+  const isInteractiveInputActive = editingUsername || awaitingTypoConfirmation;
+
+  if (isInteractiveInputActive) {
+    return null;
+  }
+
   return (
     <div className="prompt-container">
       <PromptUsername />
