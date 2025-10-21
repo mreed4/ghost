@@ -1,7 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react/prop-types */
 import { createContext, useContext } from "react";
-import useTerminalLogic from "../components/TerminalLogic";
+import useTerminalLogic from "../hooks/useTerminalLogic";
 
 const TerminalContext = createContext();
 
