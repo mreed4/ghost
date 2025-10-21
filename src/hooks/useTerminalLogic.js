@@ -33,13 +33,8 @@ function useTerminalLogic() {
   // Create bound addToHistory function
   const boundAddToHistory = (entry) => addToHistory(setHistory, entry);
 
-  // Create command handlers
-  const {
-    commandHandlers,
-    handleUsernameCommand,
-    handleSystemCommand,
-    handleCalculation,
-  } = createCommandHandlers(
+  // Create command handlers (only need commandHandlers for typo handlers)
+  const { commandHandlers } = createCommandHandlers(
     boundAddToHistory,
     username,
     setUsername,
@@ -78,6 +73,29 @@ function useTerminalLogic() {
     const [baseCommand, ...args] = lowerInput.split(" ");
     const argsString = args.join(" ");
 
+    // Create context-aware addToHistory function for this command
+    const contextualAddToHistory = (entry) => {
+      if (entry.isSystemMessage && entry.submittedUsername) {
+        // Add user input context to system messages
+        entry.userInput = input;
+      }
+      addToHistory(setHistory, entry);
+    };
+
+    // Create command handlers with contextual history
+    const {
+      commandHandlers,
+      handleUsernameCommand,
+      handleSystemCommand,
+      handleCalculation,
+    } = createCommandHandlers(
+      contextualAddToHistory,
+      username,
+      setUsername,
+      setEditingUsername,
+      setHistory
+    );
+
     // Handle calc command with arguments
     if (baseCommand === "calc" && argsString) {
       handleCalculation(argsString);
@@ -88,12 +106,9 @@ function useTerminalLogic() {
       if (["edit", "change", "new", "update", "random"].includes(subCommand)) {
         handleUsernameCommand(subCommand);
       } else {
-        boundAddToHistory({
-          command: input,
-          submittedUsername: username,
-        });
-        boundAddToHistory({
+        contextualAddToHistory({
           command: `Invalid username subcommand: ${subCommand}. Type 'username' for available options.`,
+          submittedUsername: username,
           isSystemMessage: true,
         });
       }
@@ -104,12 +119,9 @@ function useTerminalLogic() {
       if (["test", "uptime"].includes(subCommand)) {
         handleSystemCommand(subCommand);
       } else {
-        boundAddToHistory({
-          command: input,
-          submittedUsername: username,
-        });
-        boundAddToHistory({
+        contextualAddToHistory({
           command: `Invalid system subcommand: ${subCommand}. Type 'system' for available options.`,
+          submittedUsername: username,
           isSystemMessage: true,
         });
       }
@@ -128,7 +140,13 @@ function useTerminalLogic() {
       if (typoCorrection) {
         handleTypoCorrection(input, typoCorrection);
       } else {
-        addUnknownCommandToHistory(input);
+        contextualAddToHistory({
+          command: `Command not found: ${
+            input.split(" ")[0]
+          }. Type 'help' for available commands.`,
+          submittedUsername: username,
+          isSystemMessage: true,
+        });
       }
     }
 
@@ -136,19 +154,6 @@ function useTerminalLogic() {
     addToInputHistory(input);
     setInputValue("");
   }
-
-  const addUnknownCommandToHistory = (command) => {
-    boundAddToHistory({
-      command: command,
-      submittedUsername: username,
-    });
-    boundAddToHistory({
-      command: `Command not found: ${
-        command.split(" ")[0]
-      }. Type 'help' for available commands.`,
-      isSystemMessage: true,
-    });
-  };
 
   // Username Change Handling
   function handleUsernameChange(e, isCancelled = false) {
@@ -208,6 +213,7 @@ function useTerminalLogic() {
 
     boundAddToHistory({
       command: `Username changed from ${oldUsername} to ${trimmedNewUsername}`,
+      submittedUsername: oldUsername,
       isUsernameChange: true,
       isSystemMessage: true,
     });

@@ -47,21 +47,19 @@ export const createCommandHandlers = (
         grid += row + "\n";
       }
       addToHistory({
-        command: "help",
-        submittedUsername: username,
-      });
-      addToHistory({
         command:
           "Available commands:\n" +
           grid.trimEnd() +
           "\n\nUsage examples:\n  calc 2+2\n  username random\n  system test\n  system uptime" +
           "\n\nAliases:\n  date|time - Show current date and time\n  username edit|change|new|update - Enter username editing mode",
+        submittedUsername: username,
         isSystemMessage: true,
       });
     } catch (error) {
       console.error("Error in help command:", error);
       addToHistory({
         command: "Error displaying help information",
+        submittedUsername: username,
         isSystemMessage: true,
       });
     }
@@ -70,11 +68,8 @@ export const createCommandHandlers = (
   function handleCalculation(expression) {
     if (!expression || typeof expression !== "string") {
       addToHistory({
-        command: `calc ${expression || ""}`,
-        submittedUsername: username,
-      });
-      addToHistory({
         command: "Error: No expression provided. Usage: calc <expression>",
+        submittedUsername: username,
         isSystemMessage: true,
       });
       return;
@@ -82,28 +77,22 @@ export const createCommandHandlers = (
 
     const result = evaluateExpression(expression);
     addToHistory({
-      command: `calc ${expression}`,
-      submittedUsername: username,
-    });
-    addToHistory({
       command: `Result: ${result}`,
+      submittedUsername: username,
       isSystemMessage: true,
     });
   }
 
-  function createTimeHandler(commandName) {
+  function createTimeHandler() {
     return function () {
       const now = new Date();
       const formattedTime = now.toLocaleString();
 
       addToHistory({
-        command: commandName,
-        submittedUsername: username,
-      });
-      addToHistory({
         command: `Current date and time: ${formattedTime}
 
 Note: 'date' and 'time' commands are aliases - they both show the same information.`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
     };
@@ -113,8 +102,8 @@ Note: 'date' and 'time' commands are aliases - they both show the same informati
   const commandHandlers = {
     clear: handleClearCommand,
     help: handleHelpCommand,
-    time: createTimeHandler("time"),
-    date: createTimeHandler("date"),
+    time: createTimeHandler(),
+    date: createTimeHandler(),
     calc: handleCalculation,
     system: handleSystemHelp,
     username: handleUsernameHelp,

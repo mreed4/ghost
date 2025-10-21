@@ -14,8 +14,9 @@ export const createUsernameHandlers = (
     if (commands.includes(command)) {
       setEditingUsername(true);
       addToHistory({
-        command: `username ${command}`,
+        command: `Entering username editing mode...`,
         submittedUsername: username,
+        isSystemMessage: true,
       });
       return;
     }
@@ -23,11 +24,8 @@ export const createUsernameHandlers = (
       const oldUsername = username;
       const newRandomUsername = generateRandomUsername();
       addToHistory({
-        command: "username random",
-        submittedUsername: oldUsername,
-      });
-      addToHistory({
         command: `Username changed randomly from ${oldUsername} to ${newRandomUsername}`,
+        submittedUsername: oldUsername,
         isUsernameChange: true,
         isSystemMessage: true,
       });
@@ -37,10 +35,6 @@ export const createUsernameHandlers = (
 
   function handleUsernameHelp() {
     addToHistory({
-      command: "username",
-      submittedUsername: username,
-    });
-    addToHistory({
       command: `Username commands:
   username edit|change|new|update  - Enter username editing mode
   username random                  - Generate a random username
@@ -48,6 +42,7 @@ export const createUsernameHandlers = (
 Current username: ${username}
 
 Note: edit, change, new, and update are aliases - they all do the same thing.`,
+      submittedUsername: username,
       isSystemMessage: true,
     });
   }

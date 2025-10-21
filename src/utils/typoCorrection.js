@@ -59,11 +59,8 @@ export const createTypoHandlers = (
 ) => {
   const handleTypoCorrection = (originalCommand, correctedCommand) => {
     addToHistory({
-      command: originalCommand,
-      submittedUsername: username,
-    });
-    addToHistory({
       command: `Did you mean '${correctedCommand}'? (y/n)`,
+      submittedUsername: username,
       isSystemMessage: true,
     });
 
@@ -87,6 +84,7 @@ export const createTypoHandlers = (
     if (isCancelled) {
       addToHistory({
         command: "Typo correction cancelled",
+        submittedUsername: username,
         isSystemMessage: true,
       });
       setAwaitingTypoConfirmation(false);
@@ -106,6 +104,7 @@ export const createTypoHandlers = (
     if (isYes) {
       addToHistory({
         command: `Running: ${pendingTypoCorrection.corrected}`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
 
@@ -116,11 +115,13 @@ export const createTypoHandlers = (
     } else if (isNo) {
       addToHistory({
         command: `Command cancelled.`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
     } else {
       addToHistory({
         command: `Please enter 'y' for yes or 'n' for no.`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
       setTypoResponse("");

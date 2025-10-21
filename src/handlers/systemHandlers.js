@@ -11,11 +11,8 @@ export const createSystemHandlers = (addToHistory, username) => {
     if (command === "uptime") {
       const randomUptime = generateRandomUptime();
       addToHistory({
-        command: "system uptime",
-        submittedUsername: username,
-      });
-      addToHistory({
         command: `System uptime (simulated): ${randomUptime}`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
       return;
@@ -36,11 +33,8 @@ export const createSystemHandlers = (addToHistory, username) => {
       const overallStatus = `${cpuStatus}\n${ramStatus}\n${storageStatus}\n${networkStatus}\n${gpuStatus}`;
 
       addToHistory({
-        command: "system test",
-        submittedUsername: username,
-      });
-      addToHistory({
         command: `Self-test results (simulated):\n${overallStatus}`,
+        submittedUsername: username,
         isSystemMessage: true,
       });
       return;
@@ -49,15 +43,12 @@ export const createSystemHandlers = (addToHistory, username) => {
 
   function handleSystemHelp() {
     addToHistory({
-      command: "system",
-      submittedUsername: username,
-    });
-    addToHistory({
       command: `System commands:
   system test    - Run system diagnostics test
   system uptime  - Show system uptime
 
 Use 'system <subcommand>' to run system operations.`,
+      submittedUsername: username,
       isSystemMessage: true,
     });
   }

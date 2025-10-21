@@ -25,8 +25,23 @@ function HistoryItem({ item }) {
   const { username } = useTerminalContext();
 
   if (item.isSystemMessage) {
-    // Render system messages (including formatted grids for the `help` command)
-    return <pre className="history-item system-message">{item.command}</pre>;
+    // For system messages, show the user input line first (if available), then the output
+    return (
+      <div className="history-entry">
+        {item.submittedUsername && (
+          <div className="history-item">
+            <span className="history-prompt">
+              <span className="username">{item.submittedUsername}@ghost</span>
+              <span className="separator">:</span>
+              <span className="tilde">~</span>
+              <span className="separator">$</span>
+            </span>
+            {item.userInput || ""}
+          </div>
+        )}
+        <pre className="history-item system-message">{item.command}</pre>
+      </div>
+    );
   }
 
   return (
