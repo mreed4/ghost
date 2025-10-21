@@ -34,14 +34,18 @@ function useTerminalLogic() {
   const boundAddToHistory = (entry) => addToHistory(setHistory, entry);
 
   // Create command handlers
-  const { commandHandlers, handleUsernameCommand, handleCalculation } =
-    createCommandHandlers(
-      boundAddToHistory,
-      username,
-      setUsername,
-      setEditingUsername,
-      setHistory
-    );
+  const {
+    commandHandlers,
+    handleUsernameCommand,
+    handleSystemCommand,
+    handleCalculation,
+  } = createCommandHandlers(
+    boundAddToHistory,
+    username,
+    setUsername,
+    setEditingUsername,
+    setHistory
+  );
 
   // Create typo handlers
   const { handleTypoCorrection, handleTypoConfirmation } = createTypoHandlers(
@@ -92,6 +96,24 @@ function useTerminalLogic() {
         boundAddToHistory({
           prompt: "",
           command: `Invalid username subcommand: ${subCommand}. Type 'username' for available options.`,
+          isSystemMessage: true,
+        });
+      }
+    }
+    // Handle system commands with subcommands
+    else if (baseCommand === "system" && args.length > 0) {
+      const subCommand = args[0];
+      if (["test", "uptime"].includes(subCommand)) {
+        handleSystemCommand(subCommand);
+      } else {
+        boundAddToHistory({
+          prompt: `${username}@ghost:~$`,
+          command: input,
+          submittedUsername: username,
+        });
+        boundAddToHistory({
+          prompt: "",
+          command: `Invalid system subcommand: ${subCommand}. Type 'system' for available options.`,
           isSystemMessage: true,
         });
       }
