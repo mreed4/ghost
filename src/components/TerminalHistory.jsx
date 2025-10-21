@@ -63,10 +63,7 @@ function InteractiveInputForm({
   return (
     <div className={`history-item ${className}`}>
       <span className="username">&gt;</span>
-      <form
-        onSubmit={onSubmit}
-        style={{ display: "inline-flex", alignItems: "center" }}
-      >
+      <form onSubmit={onSubmit} className="interactive-form">
         <input
           type="text"
           value={value}
@@ -74,13 +71,7 @@ function InteractiveInputForm({
           onKeyDown={handleKeyDown}
           autoFocus
           placeholder={placeholder}
-          style={{
-            width: "auto",
-            background: "none",
-            border: "none",
-            color: "#fff",
-          }}
-          className="input-block-cursor"
+          className="input-block-cursor interactive-input"
         />
       </form>
     </div>

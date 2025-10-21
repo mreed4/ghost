@@ -7,6 +7,7 @@ import {
   createTypoHandlers,
 } from "../utils/typoCorrection.js";
 import { createCommandHandlers } from "../handlers/commandHandlers.js";
+import { useInputHistory } from "./useInputHistory.js";
 
 function useTerminalLogic() {
   // State
@@ -25,6 +26,9 @@ function useTerminalLogic() {
   // Refs
   const inputRef = useRef(null);
   const terminalEndRef = useRef(null);
+
+  // Input history hook
+  const { addToInputHistory, handleHistoryKeyDown } = useInputHistory();
 
   // Create bound addToHistory function
   const boundAddToHistory = (entry) => addToHistory(setHistory, entry);
@@ -110,6 +114,8 @@ function useTerminalLogic() {
       }
     }
 
+    // Add command to input history
+    addToInputHistory(input);
     setInputValue("");
   }
 
@@ -232,6 +238,7 @@ function useTerminalLogic() {
     handleCommandSubmit,
     handleUsernameChange,
     handleTypoConfirmation: boundHandleTypoConfirmation,
+    handleHistoryKeyDown,
   };
 }
 

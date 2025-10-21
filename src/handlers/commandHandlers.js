@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 // Terminal command handlers
 
 import {
@@ -20,12 +21,8 @@ export const createCommandHandlers = (
 
   const handleHelpCommand = () => {
     try {
-      // Include calc and username commands in help
-      const allCommands = [
-        ...Object.keys(commandHandlers),
-        "calc",
-        "username",
-      ].sort();
+      // Include calc command in help (username is already in commandHandlers)
+      const allCommands = [...Object.keys(commandHandlers), "calc"].sort();
       const columns = 3;
       const maxCommandLength = Math.max(
         ...allCommands.map((cmd) => cmd.length)
@@ -48,7 +45,8 @@ export const createCommandHandlers = (
         command:
           "Available commands:\n" +
           grid.trimEnd() +
-          "\n\nUsage examples:\n  calc 2+2\n  username random\n  username edit",
+          "\n\nUsage examples:\n  calc 2+2\n  username random\n  username edit" +
+          "\n\nAliases:\n  date|time - Show current date and time\n  username edit|change|new|update - Enter username editing mode",
         isSystemMessage: true,
       });
     } catch (error) {
@@ -147,7 +145,9 @@ Note: edit, change, new, and update are aliases - they all do the same thing.`,
     });
     addToHistory({
       prompt: "",
-      command: `Current date and time: ${formattedTime}`,
+      command: `Current date and time: ${formattedTime}
+
+Note: 'date' and 'time' commands are aliases - they both show the same information.`,
       isSystemMessage: true,
     });
   };

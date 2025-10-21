@@ -34,8 +34,17 @@ function PromptUsername() {
 }
 
 function PromptInput() {
-  const { inputValue, setInputValue, handleCommandSubmit, inputRef } =
-    useTerminalContext();
+  const {
+    inputValue,
+    setInputValue,
+    handleCommandSubmit,
+    inputRef,
+    handleHistoryKeyDown,
+  } = useTerminalContext();
+
+  const handleKeyDown = (e) => {
+    handleHistoryKeyDown(e, inputValue, setInputValue);
+  };
 
   return (
     <form onSubmit={handleCommandSubmit} style={{ flex: 1 }}>
@@ -44,9 +53,10 @@ function PromptInput() {
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyDown}
         autoFocus
-        placeholder="Type a command"
-        className="input-block-cursor"
+        placeholder="Type a command (↑↓ for history)"
+        className="input-block-cursor terminal-input"
       />
     </form>
   );
