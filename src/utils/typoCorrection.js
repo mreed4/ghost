@@ -59,12 +59,10 @@ export const createTypoHandlers = (
 ) => {
   const handleTypoCorrection = (originalCommand, correctedCommand) => {
     addToHistory({
-      prompt: `${username}@ghost:~$`,
       command: originalCommand,
       submittedUsername: username,
     });
     addToHistory({
-      prompt: "",
       command: `Did you mean '${correctedCommand}'? (y/n)`,
       isSystemMessage: true,
     });
@@ -88,7 +86,6 @@ export const createTypoHandlers = (
     // Handle cancellation
     if (isCancelled) {
       addToHistory({
-        prompt: "",
         command: "Typo correction cancelled",
         isSystemMessage: true,
       });
@@ -108,7 +105,6 @@ export const createTypoHandlers = (
 
     if (isYes) {
       addToHistory({
-        prompt: "",
         command: `Running: ${pendingTypoCorrection.corrected}`,
         isSystemMessage: true,
       });
@@ -119,13 +115,11 @@ export const createTypoHandlers = (
       }
     } else if (isNo) {
       addToHistory({
-        prompt: "",
         command: `Command cancelled.`,
         isSystemMessage: true,
       });
     } else {
       addToHistory({
-        prompt: "",
         command: `Please enter 'y' for yes or 'n' for no.`,
         isSystemMessage: true,
       });

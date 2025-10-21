@@ -89,12 +89,10 @@ function useTerminalLogic() {
         handleUsernameCommand(subCommand);
       } else {
         boundAddToHistory({
-          prompt: `${username}@ghost:~$`,
           command: input,
           submittedUsername: username,
         });
         boundAddToHistory({
-          prompt: "",
           command: `Invalid username subcommand: ${subCommand}. Type 'username' for available options.`,
           isSystemMessage: true,
         });
@@ -107,12 +105,10 @@ function useTerminalLogic() {
         handleSystemCommand(subCommand);
       } else {
         boundAddToHistory({
-          prompt: `${username}@ghost:~$`,
           command: input,
           submittedUsername: username,
         });
         boundAddToHistory({
-          prompt: "",
           command: `Invalid system subcommand: ${subCommand}. Type 'system' for available options.`,
           isSystemMessage: true,
         });
@@ -143,12 +139,10 @@ function useTerminalLogic() {
 
   const addUnknownCommandToHistory = (command) => {
     boundAddToHistory({
-      prompt: `${username}@ghost:~$`,
       command: command,
       submittedUsername: username,
     });
     boundAddToHistory({
-      prompt: "",
       command: `Command not found: ${
         command.split(" ")[0]
       }. Type 'help' for available commands.`,
@@ -163,7 +157,6 @@ function useTerminalLogic() {
     // Handle cancellation
     if (isCancelled) {
       boundAddToHistory({
-        prompt: "",
         command: "Username edit cancelled",
         isSystemMessage: true,
       });
@@ -178,7 +171,6 @@ function useTerminalLogic() {
     // Validate username
     if (!trimmedNewUsername) {
       boundAddToHistory({
-        prompt: "",
         command: "Error: Username cannot be empty",
         isSystemMessage: true,
       });
@@ -187,7 +179,6 @@ function useTerminalLogic() {
 
     if (trimmedNewUsername.length > 20) {
       boundAddToHistory({
-        prompt: "",
         command: "Error: Username cannot be longer than 20 characters",
         isSystemMessage: true,
       });
@@ -196,7 +187,6 @@ function useTerminalLogic() {
 
     if (!/^[a-zA-Z0-9_-]+$/.test(trimmedNewUsername)) {
       boundAddToHistory({
-        prompt: "",
         command:
           "Error: Username can only contain letters, numbers, hyphens, and underscores",
         isSystemMessage: true,
@@ -207,7 +197,6 @@ function useTerminalLogic() {
     const oldUsername = username;
     if (trimmedNewUsername === oldUsername) {
       boundAddToHistory({
-        prompt: "",
         command: "Error: New username is the same as current username",
         isSystemMessage: true,
       });
@@ -218,7 +207,6 @@ function useTerminalLogic() {
     }
 
     boundAddToHistory({
-      prompt: `${oldUsername}@ghost:~$`,
       command: `Username changed from ${oldUsername} to ${trimmedNewUsername}`,
       isUsernameChange: true,
       isSystemMessage: true,

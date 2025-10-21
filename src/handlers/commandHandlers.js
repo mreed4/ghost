@@ -25,14 +25,15 @@ export const createCommandHandlers = (
     addToHistory,
     username
   );
-  const handleClearCommand = () => {
-    setHistory([]);
-  };
 
-  const handleHelpCommand = () => {
+  function handleClearCommand() {
+    setHistory([]);
+  }
+
+  function handleHelpCommand() {
     try {
-      // Include calc command in help (username is already in commandHandlers)
-      const allCommands = [...Object.keys(commandHandlers), "calc"].sort();
+      // Get all commands from the commandHandlers map
+      const allCommands = Object.keys(commandHandlers).sort();
       const columns = 3;
       const maxCommandLength = Math.max(
         ...allCommands.map((cmd) => cmd.length)
@@ -46,12 +47,10 @@ export const createCommandHandlers = (
         grid += row + "\n";
       }
       addToHistory({
-        prompt: `${username}@ghost:~$`,
         command: "help",
         submittedUsername: username,
       });
       addToHistory({
-        prompt: "",
         command:
           "Available commands:\n" +
           grid.trimEnd() +
@@ -62,22 +61,19 @@ export const createCommandHandlers = (
     } catch (error) {
       console.error("Error in help command:", error);
       addToHistory({
-        prompt: "",
         command: "Error displaying help information",
         isSystemMessage: true,
       });
     }
-  };
+  }
 
-  const handleCalculation = (expression) => {
+  function handleCalculation(expression) {
     if (!expression || typeof expression !== "string") {
       addToHistory({
-        prompt: `${username}@ghost:~$`,
         command: `calc ${expression || ""}`,
         submittedUsername: username,
       });
       addToHistory({
-        prompt: "",
         command: "Error: No expression provided. Usage: calc <expression>",
         isSystemMessage: true,
       });
@@ -86,40 +82,40 @@ export const createCommandHandlers = (
 
     const result = evaluateExpression(expression);
     addToHistory({
-      prompt: `${username}@ghost:~$`,
       command: `calc ${expression}`,
       submittedUsername: username,
     });
     addToHistory({
-      prompt: "",
       command: `Result: ${result}`,
       isSystemMessage: true,
     });
-  };
+  }
 
-  const handleTimeCommand = (keyword) => {
-    const now = new Date();
-    const formattedTime = now.toLocaleString();
-    addToHistory({
-      prompt: `${username}@ghost:~$`,
-      command: `${keyword}`,
-      submittedUsername: username,
-    });
-    addToHistory({
-      prompt: "",
-      command: `Current date and time: ${formattedTime}
+  function createTimeHandler(commandName) {
+    return function () {
+      const now = new Date();
+      const formattedTime = now.toLocaleString();
+
+      addToHistory({
+        command: commandName,
+        submittedUsername: username,
+      });
+      addToHistory({
+        command: `Current date and time: ${formattedTime}
 
 Note: 'date' and 'time' commands are aliases - they both show the same information.`,
-      isSystemMessage: true,
-    });
-  };
+        isSystemMessage: true,
+      });
+    };
+  }
 
   // Command Handlers Map
   const commandHandlers = {
     clear: handleClearCommand,
     help: handleHelpCommand,
-    time: () => handleTimeCommand("time"),
-    date: () => handleTimeCommand("date"),
+    time: createTimeHandler("time"),
+    date: createTimeHandler("date"),
+    calc: handleCalculation,
     system: handleSystemHelp,
     username: handleUsernameHelp,
   };

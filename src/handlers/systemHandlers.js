@@ -7,16 +7,14 @@ import {
 } from "../utils/terminalUtils.js";
 
 export const createSystemHandlers = (addToHistory, username) => {
-  const handleSystemCommand = (command) => {
+  function handleSystemCommand(command) {
     if (command === "uptime") {
       const randomUptime = generateRandomUptime();
       addToHistory({
-        prompt: `${username}@ghost:~$`,
         command: "system uptime",
         submittedUsername: username,
       });
       addToHistory({
-        prompt: "",
         command: `System uptime (simulated): ${randomUptime}`,
         isSystemMessage: true,
       });
@@ -38,27 +36,23 @@ export const createSystemHandlers = (addToHistory, username) => {
       const overallStatus = `${cpuStatus}\n${ramStatus}\n${storageStatus}\n${networkStatus}\n${gpuStatus}`;
 
       addToHistory({
-        prompt: `${username}@ghost:~$`,
         command: "system test",
         submittedUsername: username,
       });
       addToHistory({
-        prompt: "",
         command: `Self-test results (simulated):\n${overallStatus}`,
         isSystemMessage: true,
       });
       return;
     }
-  };
+  }
 
-  const handleSystemHelp = () => {
+  function handleSystemHelp() {
     addToHistory({
-      prompt: `${username}@ghost:~$`,
       command: "system",
       submittedUsername: username,
     });
     addToHistory({
-      prompt: "",
       command: `System commands:
   system test    - Run system diagnostics test
   system uptime  - Show system uptime
@@ -66,7 +60,7 @@ export const createSystemHandlers = (addToHistory, username) => {
 Use 'system <subcommand>' to run system operations.`,
       isSystemMessage: true,
     });
-  };
+  }
 
   return {
     handleSystemCommand,
