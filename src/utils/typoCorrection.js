@@ -16,13 +16,12 @@ export const getTypoCorrection = (command) => {
     hep: "help",
     halp: "help",
 
-    // Time command typos
+    // Time command typos (including date as alias)
     tiem: "time",
     tim: "time",
-
-    // Date command typos
-    dat: "date",
-    dae: "date",
+    date: "time", // date is treated as a typo/alias for time
+    dat: "time", // other date typos also point to time
+    dae: "time",
 
     // Test command typos
     tset: "test",

@@ -83,27 +83,38 @@ export const createCommandHandlers = (
     });
   }
 
-  function createTimeHandler() {
-    return function () {
-      const now = new Date();
-      const formattedTime = now.toLocaleString();
+  function handleTimeCommand() {
+    const now = new Date();
+    const formattedTime = now.toLocaleString();
 
-      addToHistory({
-        command: `Current date and time: ${formattedTime}
+    addToHistory({
+      command: `Current date and time: ${formattedTime}
 
 Note: 'date' and 'time' commands are aliases - they both show the same information.`,
-        submittedUsername: username,
-        isSystemMessage: true,
-      });
-    };
+      submittedUsername: username,
+      isSystemMessage: true,
+    });
+  }
+
+  function handleDateCommand() {
+    const now = new Date();
+    const formattedTime = now.toLocaleString();
+
+    addToHistory({
+      command: `Current date and time: ${formattedTime}
+
+Note: 'date' and 'time' commands are aliases - they both show the same information.`,
+      submittedUsername: username,
+      isSystemMessage: true,
+    });
   }
 
   // Command Handlers Map
   const commandHandlers = {
     clear: handleClearCommand,
     help: handleHelpCommand,
-    time: createTimeHandler(),
-    date: createTimeHandler(),
+    time: handleTimeCommand,
+    date: handleDateCommand,
     calc: handleCalculation,
     system: handleSystemHelp,
     username: handleUsernameHelp,
