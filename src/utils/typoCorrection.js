@@ -57,10 +57,12 @@ export const createTypoHandlers = (
   commandHandlers
 ) => {
   const handleTypoCorrection = (originalCommand, correctedCommand) => {
+    // Show both the original command and suggestion in a single system message
     addToHistory({
       command: `Did you mean '${correctedCommand}'? (y/n)`,
       submittedUsername: username,
       isSystemMessage: true,
+      userInput: originalCommand, // This will show the original command in the prompt line
     });
 
     // Set state to await confirmation

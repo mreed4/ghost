@@ -191,9 +191,7 @@ function useTerminalLogic() {
       addToInputHistory(input);
       setInputValue("");
       return;
-    }
-
-    // Command not found
+    } // Command not found
     contextualAddToHistory({
       command: `Command not found: ${
         input.split(" ")[0]
