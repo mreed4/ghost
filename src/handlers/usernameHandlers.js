@@ -4,24 +4,65 @@
 import { generateRandomUsername } from "../utils/terminalUtils.js";
 
 export const createUsernameHandlers = (params) => {
-  const { addToHistory, username, setUsername, setEditingUsername } = params;
+  const { addToHistory, username, setUsername } = params;
 
-  function handleUsernameCommand(command) {
-    /* */
+  function handleUsernameCommand(command, newUsernameArg) {
     const commands = ["edit", "new", "change", "update"];
 
     if (commands.includes(command)) {
-      setEditingUsername(true);
+      if (!newUsernameArg || newUsernameArg.trim() === "") {
+        addToHistory({
+          command: `Usage: username ${command} <new_username>`,
+          submittedUsername: username,
+          isSystemMessage: true,
+        });
+        return;
+      }
+
+      const trimmedNewUsername = newUsernameArg.trim();
+      const oldUsername = username;
+
+      // Validate username
+      if (trimmedNewUsername.length > 20) {
+        addToHistory({
+          command: "Error: Username cannot be longer than 20 characters",
+          submittedUsername: username,
+          isSystemMessage: true,
+        });
+        return;
+      }
+
+      if (!/^[a-zA-Z0-9_-]+$/.test(trimmedNewUsername)) {
+        addToHistory({
+          command:
+            "Error: Username can only contain letters, numbers, hyphens, and underscores",
+          submittedUsername: username,
+          isSystemMessage: true,
+        });
+        return;
+      }
+
+      if (trimmedNewUsername === oldUsername) {
+        addToHistory({
+          command: "Error: New username is the same as current username",
+          submittedUsername: username,
+          isSystemMessage: true,
+        });
+        return;
+      }
+
+      // Update username
       addToHistory({
-        command: `Entering username editing mode...`,
-        submittedUsername: username,
+        command: `Username changed from ${oldUsername} to ${trimmedNewUsername}`,
+        submittedUsername: oldUsername,
+        isUsernameChange: true,
         isSystemMessage: true,
       });
+      setUsername(trimmedNewUsername);
       return;
     }
 
     if (command === "random") {
-      /* */
       const oldUsername = username;
       const newRandomUsername = generateRandomUsername();
 
@@ -38,12 +79,15 @@ export const createUsernameHandlers = (params) => {
   function handleUsernameHelp() {
     const helpText = [
       "Username commands:",
-      "  username edit|change|new|update  - Enter username editing mode",
-      "  username random                  - Generate a random username",
+      "  username edit|change|new|update <username>  - Change username",
+      "  username random                             - Generate a random username",
       "",
       `Current username: ${username}`,
       "",
-      "Note: edit, change, new, and update are aliases - they all do the same thing.",
+      "Examples:",
+      "  username new alice",
+      "  username edit bob123",
+      "  username random",
     ].join("\n");
 
     addToHistory({

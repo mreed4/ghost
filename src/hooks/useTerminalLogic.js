@@ -124,6 +124,7 @@ function useTerminalLogic() {
     // Handle username commands with subcommands
     if (isUsernameCommand) {
       const subCommand = args[0];
+      const newUsernameArg = args.slice(1).join(" "); // Join remaining args as username
       const validUsernameCommands = [
         "edit",
         "change",
@@ -135,7 +136,7 @@ function useTerminalLogic() {
         validUsernameCommands.includes(subCommand);
 
       if (isValidUsernameSubCommand) {
-        handleUsernameCommand(subCommand);
+        handleUsernameCommand(subCommand, newUsernameArg);
       } else {
         contextualAddToHistory({
           command: `Invalid username subcommand: ${subCommand}. Type 'username' for available options.`,
