@@ -171,7 +171,7 @@ export const createPasswordHandlers = ({ addToHistory, username }) => {
 
     const passwordMessage = [
       `Generated Password: ${password}`,
-      "\n",
+      "",
       `Length: ${length} characters`,
       `Character types: ${charTypes.join(", ")}`,
       `Strength: ${strength}`,
