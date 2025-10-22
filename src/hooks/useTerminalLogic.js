@@ -96,6 +96,7 @@ function useTerminalLogic() {
       handleUsernameCommand,
       handleSystemCommand,
       handleCalculation,
+      handlePasswordCommand,
     } = createCommandHandlers({
       addToHistory: contextualAddToHistory,
       username,
@@ -108,6 +109,7 @@ function useTerminalLogic() {
     const isCalcCommand = baseCommand === "calc" && argsString;
     const isUsernameCommand = baseCommand === "username" && args.length > 0;
     const isSystemCommand = baseCommand === "system" && args.length > 0;
+    const isPasswordCommand = baseCommand === "password";
     const hasExactMatch = commandHandlers[lowerInput];
     const hasSingleWordMatch = commandHandlers[baseCommand];
     const typoCorrection = getTypoCorrection(baseCommand);
@@ -116,6 +118,14 @@ function useTerminalLogic() {
     // Handle calc command with arguments
     if (isCalcCommand) {
       handleCalculation(argsString);
+      addToInputHistory(input);
+      setInputValue("");
+      return;
+    }
+
+    // Handle password command
+    if (isPasswordCommand) {
+      handlePasswordCommand(argsString);
       addToInputHistory(input);
       setInputValue("");
       return;

@@ -1,9 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable quote-props */
 // Terminal command handlers
 
 import { evaluateExpression } from "../utils/terminalUtils.js";
 import { createUsernameHandlers } from "./usernameHandlers.js";
 import { createSystemHandlers } from "./systemHandlers.js";
+import { createPasswordHandlers } from "./passwordHandlers.js";
 
 export const createCommandHandlers = (params) => {
   const {
@@ -24,6 +26,12 @@ export const createCommandHandlers = (params) => {
 
   // Create system handlers
   const { handleSystemCommand, handleSystemHelp } = createSystemHandlers({
+    addToHistory,
+    username,
+  });
+
+  // Create password handlers
+  const { handlePasswordCommand, handlePasswordHelp } = createPasswordHandlers({
     addToHistory,
     username,
   });
@@ -139,6 +147,7 @@ export const createCommandHandlers = (params) => {
     calc: handleCalculation,
     system: handleSystemHelp,
     username: handleUsernameHelp,
+    password: () => handlePasswordCommand(""),
   };
 
   return {
@@ -147,5 +156,6 @@ export const createCommandHandlers = (params) => {
     handleSystemCommand,
     handleCalculation,
     handleUsernameHelp,
+    handlePasswordCommand,
   };
 };
