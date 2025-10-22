@@ -5,26 +5,28 @@ import { evaluateExpression } from "../utils/terminalUtils.js";
 import { createUsernameHandlers } from "./usernameHandlers.js";
 import { createSystemHandlers } from "./systemHandlers.js";
 
-export const createCommandHandlers = (
-  addToHistory,
-  username,
-  setUsername,
-  setEditingUsername,
-  setHistory
-) => {
-  // Create username handlers
-  const { handleUsernameCommand, handleUsernameHelp } = createUsernameHandlers(
+export const createCommandHandlers = (params) => {
+  const {
     addToHistory,
     username,
     setUsername,
-    setEditingUsername
-  );
+    setEditingUsername,
+    setHistory,
+  } = params;
+
+  // Create username handlers
+  const { handleUsernameCommand, handleUsernameHelp } = createUsernameHandlers({
+    addToHistory,
+    username,
+    setUsername,
+    setEditingUsername,
+  });
 
   // Create system handlers
-  const { handleSystemCommand, handleSystemHelp } = createSystemHandlers(
+  const { handleSystemCommand, handleSystemHelp } = createSystemHandlers({
     addToHistory,
-    username
-  );
+    username,
+  });
 
   function handleClearCommand() {
     setHistory([]);
@@ -46,12 +48,23 @@ export const createCommandHandlers = (
         const row = paddedCommands.slice(i, i + columns).join("  ");
         grid += row + "\n";
       }
+      const helpText = [
+        "Available commands:",
+        grid.trimEnd(),
+        "",
+        "Usage examples:",
+        "  calc 2+2",
+        "  username random",
+        "  system test",
+        "  system uptime",
+        "",
+        "Aliases:",
+        "  date|time - Show current date and time",
+        "  username edit|change|new|update - Enter username editing mode",
+      ].join("\n");
+
       addToHistory({
-        command:
-          "Available commands:\n" +
-          grid.trimEnd() +
-          "\n\nUsage examples:\n  calc 2+2\n  username random\n  system test\n  system uptime" +
-          "\n\nAliases:\n  date|time - Show current date and time\n  username edit|change|new|update - Enter username editing mode",
+        command: helpText,
         submittedUsername: username,
         isSystemMessage: true,
       });
@@ -87,10 +100,14 @@ export const createCommandHandlers = (
     const now = new Date();
     const formattedTime = now.toLocaleString();
 
-    addToHistory({
-      command: `Current date and time: ${formattedTime}
+    const timeMessage = [
+      "Current date and time: " + formattedTime,
+      "",
+      "Note: 'date' and 'time' commands are aliases - they both show the same information.",
+    ].join("\n");
 
-Note: 'date' and 'time' commands are aliases - they both show the same information.`,
+    addToHistory({
+      command: timeMessage,
       submittedUsername: username,
       isSystemMessage: true,
     });
@@ -100,10 +117,14 @@ Note: 'date' and 'time' commands are aliases - they both show the same informati
     const now = new Date();
     const formattedTime = now.toLocaleString();
 
-    addToHistory({
-      command: `Current date and time: ${formattedTime}
+    const dateMessage = [
+      "Current date and time: " + formattedTime,
+      "",
+      "Note: 'date' and 'time' commands are aliases - they both show the same information.",
+    ].join("\n");
 
-Note: 'date' and 'time' commands are aliases - they both show the same information.`,
+    addToHistory({
+      command: dateMessage,
       submittedUsername: username,
       isSystemMessage: true,
     });

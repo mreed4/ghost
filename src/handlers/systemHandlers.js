@@ -6,7 +6,8 @@ import {
   generateTestStatus,
 } from "../utils/terminalUtils.js";
 
-export const createSystemHandlers = (addToHistory, username) => {
+export const createSystemHandlers = (params) => {
+  const { addToHistory, username } = params;
   function handleSystemCommand(command) {
     if (command === "uptime") {
       const randomUptime = generateRandomUptime();
@@ -19,21 +20,25 @@ export const createSystemHandlers = (addToHistory, username) => {
     }
 
     if (command === "test") {
-      const cpuStatus = `CPU: ${generateTestStatus(["Passed", "Failed"])}`;
-      const ramStatus = `RAM: ${generateTestStatus(["Passed", "Failed"])}`;
-      const storageStatus = `Storage: ${generateTestStatus([
-        "Passed",
-        "Failed",
-      ])}`;
-      const networkStatus = `Network: ${generateTestStatus([
-        "Connected",
-        "Disconnected",
-      ])}`;
-      const gpuStatus = `GPU: ${generateTestStatus(["Enabled", "Disabled"])}`;
-      const overallStatus = `${cpuStatus}\n${ramStatus}\n${storageStatus}\n${networkStatus}\n${gpuStatus}`;
+      const cpuStatus = "CPU: " + generateTestStatus(["Passed", "Failed"]);
+      const ramStatus = "RAM: " + generateTestStatus(["Passed", "Failed"]);
+      const storageStatus =
+        "Storage: " + generateTestStatus(["Passed", "Failed"]);
+      const networkStatus =
+        "Network: " + generateTestStatus(["Connected", "Disconnected"]);
+      const gpuStatus = "GPU: " + generateTestStatus(["Enabled", "Disabled"]);
+
+      const testResults = [
+        "Self-test results (simulated):",
+        cpuStatus,
+        ramStatus,
+        storageStatus,
+        networkStatus,
+        gpuStatus,
+      ].join("\n");
 
       addToHistory({
-        command: `Self-test results (simulated):\n${overallStatus}`,
+        command: testResults,
         submittedUsername: username,
         isSystemMessage: true,
       });
@@ -42,12 +47,16 @@ export const createSystemHandlers = (addToHistory, username) => {
   }
 
   function handleSystemHelp() {
-    addToHistory({
-      command: `System commands:
-  system test    - Run system diagnostics test
-  system uptime  - Show system uptime
+    const helpText = [
+      "System commands:",
+      "  system test    - Run system diagnostics test",
+      "  system uptime  - Show system uptime",
+      "",
+      "Use 'system <subcommand>' to run system operations.",
+    ].join("\n");
 
-Use 'system <subcommand>' to run system operations.`,
+    addToHistory({
+      command: helpText,
       submittedUsername: username,
       isSystemMessage: true,
     });
