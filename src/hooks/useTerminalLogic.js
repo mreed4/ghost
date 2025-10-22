@@ -1,6 +1,6 @@
 /* eslint-disable quote-props */
 // Main terminal logic hook
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { addToHistory } from "../utils/terminalUtils.js";
 import {
   getTypoCorrection,
@@ -8,20 +8,28 @@ import {
 } from "../utils/typoCorrection.js";
 import { createCommandHandlers } from "../handlers/commandHandlers.js";
 import { useInputHistory } from "./useInputHistory.js";
+import { useTerminalState } from "./useTerminalState.js";
 
 function useTerminalLogic() {
-  // State
-  const [history, setHistory] = useState([]);
-  const [inputValue, setInputValue] = useState("");
-  const [username, setUsername] = useState(
-    `user${Math.floor(Math.random() * 10000)}`
-  );
-  const [editingUsername, setEditingUsername] = useState(false);
-  const [newUsername, setNewUsername] = useState("");
-  const [awaitingTypoConfirmation, setAwaitingTypoConfirmation] =
-    useState(false);
-  const [pendingTypoCorrection, setPendingTypoCorrection] = useState(null);
-  const [typoResponse, setTypoResponse] = useState("");
+  // State management
+  const {
+    history,
+    setHistory,
+    inputValue,
+    setInputValue,
+    username,
+    setUsername,
+    editingUsername,
+    newUsername,
+    setEditingUsername,
+    setNewUsername,
+    awaitingTypoConfirmation,
+    pendingTypoCorrection,
+    typoResponse,
+    setAwaitingTypoConfirmation,
+    setPendingTypoCorrection,
+    setTypoResponse,
+  } = useTerminalState();
 
   // Refs
   const inputRef = useRef(null);
@@ -96,14 +104,37 @@ function useTerminalLogic() {
       setHistory,
     });
 
+    // Command condition variables
+    const isCalcCommand = baseCommand === "calc" && argsString;
+    const isUsernameCommand = baseCommand === "username" && args.length > 0;
+    const isSystemCommand = baseCommand === "system" && args.length > 0;
+    const hasExactMatch = commandHandlers[lowerInput];
+    const hasSingleWordMatch = commandHandlers[baseCommand];
+    const typoCorrection = getTypoCorrection(baseCommand);
+    const hasTypoCorrection = !!typoCorrection;
+
     // Handle calc command with arguments
-    if (baseCommand === "calc" && argsString) {
+    if (isCalcCommand) {
       handleCalculation(argsString);
+      addToInputHistory(input);
+      setInputValue("");
+      return;
     }
+
     // Handle username commands with subcommands
-    else if (baseCommand === "username" && args.length > 0) {
+    if (isUsernameCommand) {
       const subCommand = args[0];
-      if (["edit", "change", "new", "update", "random"].includes(subCommand)) {
+      const validUsernameCommands = [
+        "edit",
+        "change",
+        "new",
+        "update",
+        "random",
+      ];
+      const isValidUsernameSubCommand =
+        validUsernameCommands.includes(subCommand);
+
+      if (isValidUsernameSubCommand) {
         handleUsernameCommand(subCommand);
       } else {
         contextualAddToHistory({
@@ -112,11 +143,18 @@ function useTerminalLogic() {
           isSystemMessage: true,
         });
       }
+      addToInputHistory(input);
+      setInputValue("");
+      return;
     }
+
     // Handle system commands with subcommands
-    else if (baseCommand === "system" && args.length > 0) {
+    if (isSystemCommand) {
       const subCommand = args[0];
-      if (["test", "uptime"].includes(subCommand)) {
+      const validSystemCommands = ["test", "uptime"];
+      const isValidSystemSubCommand = validSystemCommands.includes(subCommand);
+
+      if (isValidSystemSubCommand) {
         handleSystemCommand(subCommand);
       } else {
         contextualAddToHistory({
@@ -125,32 +163,45 @@ function useTerminalLogic() {
           isSystemMessage: true,
         });
       }
-    }
-    // Handle exact command matches
-    else if (commandHandlers[lowerInput]) {
-      commandHandlers[lowerInput]();
-    }
-    // Handle single word commands
-    else if (commandHandlers[baseCommand]) {
-      commandHandlers[baseCommand]();
-    }
-    // Check for typos before treating as unknown command
-    else {
-      const typoCorrection = getTypoCorrection(baseCommand);
-      if (typoCorrection) {
-        handleTypoCorrection(input, typoCorrection);
-      } else {
-        contextualAddToHistory({
-          command: `Command not found: ${
-            input.split(" ")[0]
-          }. Type 'help' for available commands.`,
-          submittedUsername: username,
-          isSystemMessage: true,
-        });
-      }
+      addToInputHistory(input);
+      setInputValue("");
+      return;
     }
 
-    // Add command to input history
+    // Handle exact command matches
+    if (hasExactMatch) {
+      commandHandlers[lowerInput]();
+      addToInputHistory(input);
+      setInputValue("");
+      return;
+    }
+
+    // Handle single word commands
+    if (hasSingleWordMatch) {
+      commandHandlers[baseCommand]();
+      addToInputHistory(input);
+      setInputValue("");
+      return;
+    }
+
+    // Check for typos before treating as unknown command
+    if (hasTypoCorrection) {
+      handleTypoCorrection(input, typoCorrection);
+      addToInputHistory(input);
+      setInputValue("");
+      return;
+    }
+
+    // Command not found
+    contextualAddToHistory({
+      command: `Command not found: ${
+        input.split(" ")[0]
+      }. Type 'help' for available commands.`,
+      submittedUsername: username,
+      isSystemMessage: true,
+    });
+
+    // Add command to input history and clear input
     addToInputHistory(input);
     setInputValue("");
   }
@@ -172,9 +223,16 @@ function useTerminalLogic() {
     }
 
     const trimmedNewUsername = newUsername.trim();
+    const oldUsername = username;
 
-    // Validate username
-    if (!trimmedNewUsername) {
+    // Validation condition variables
+    const isEmpty = !trimmedNewUsername;
+    const isTooLong = trimmedNewUsername.length > 20;
+    const hasInvalidCharacters = !/^[a-zA-Z0-9_-]+$/.test(trimmedNewUsername);
+    const isSameAsCurrentUsername = trimmedNewUsername === oldUsername;
+
+    // Validate username - empty check
+    if (isEmpty) {
       boundAddToHistory({
         command: "Error: Username cannot be empty",
         isSystemMessage: true,
@@ -182,7 +240,8 @@ function useTerminalLogic() {
       return;
     }
 
-    if (trimmedNewUsername.length > 20) {
+    // Validate username - length check
+    if (isTooLong) {
       boundAddToHistory({
         command: "Error: Username cannot be longer than 20 characters",
         isSystemMessage: true,
@@ -190,7 +249,8 @@ function useTerminalLogic() {
       return;
     }
 
-    if (!/^[a-zA-Z0-9_-]+$/.test(trimmedNewUsername)) {
+    // Validate username - character check
+    if (hasInvalidCharacters) {
       boundAddToHistory({
         command:
           "Error: Username can only contain letters, numbers, hyphens, and underscores",
@@ -199,8 +259,8 @@ function useTerminalLogic() {
       return;
     }
 
-    const oldUsername = username;
-    if (trimmedNewUsername === oldUsername) {
+    // Validate username - duplicate check
+    if (isSameAsCurrentUsername) {
       boundAddToHistory({
         command: "Error: New username is the same as current username",
         isSystemMessage: true,
@@ -217,6 +277,7 @@ function useTerminalLogic() {
       isUsernameChange: true,
       isSystemMessage: true,
     });
+
     setUsername(trimmedNewUsername);
     setEditingUsername(false);
     setNewUsername("");
