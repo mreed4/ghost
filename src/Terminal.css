@@ -64,6 +64,7 @@ body {
 .prompt-container {
   display: flex;
   align-items: center;
+  margin-bottom: 10rem;
 }
 
 .history-prompt,

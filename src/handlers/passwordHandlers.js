@@ -40,7 +40,30 @@ export const createPasswordHandlers = ({ addToHistory, username }) => {
       .split(/\s+/)
       .filter((arg) => arg);
 
-    // Default values
+    // If no arguments, show help
+    if (argsArray.length === 0) {
+      handlePasswordHelp();
+      return;
+    }
+
+    const subCommand = argsArray[0];
+    const remainingArgs = argsArray.slice(1);
+
+    // Check for valid subcommands
+    if (
+      subCommand !== "new" &&
+      subCommand !== "gen" &&
+      subCommand !== "generate"
+    ) {
+      addToHistory({
+        command: `Error: Invalid subcommand '${subCommand}'. Use 'password new' or 'password gen' to generate passwords.`,
+        submittedUsername: username,
+        isSystemMessage: true,
+      });
+      return;
+    }
+
+    // Parse remaining arguments for password generation
     let length = 12;
     let options = {
       includeUppercase: true,
@@ -51,8 +74,8 @@ export const createPasswordHandlers = ({ addToHistory, username }) => {
     };
 
     // Parse arguments
-    for (let i = 0; i < argsArray.length; i++) {
-      const arg = argsArray[i];
+    for (let i = 0; i < remainingArgs.length; i++) {
+      const arg = remainingArgs[i];
 
       // Check for length (number)
       if (/^\d+$/.test(arg)) {
@@ -89,20 +112,15 @@ export const createPasswordHandlers = ({ addToHistory, username }) => {
             break;
           default:
             addToHistory({
-              command: `Error: Unknown option '${arg}'. Type 'password help' for usage.`,
+              command: `Error: Unknown option '${arg}'. Type 'password' for usage.`,
               submittedUsername: username,
               isSystemMessage: true,
             });
             return;
         }
-      }
-      // Check for help
-      else if (arg === "help") {
-        handlePasswordHelp();
-        return;
       } else {
         addToHistory({
-          command: `Error: Invalid argument '${arg}'. Type 'password help' for usage.`,
+          command: `Error: Invalid argument '${arg}'. Type 'password' for usage.`,
           submittedUsername: username,
           isSystemMessage: true,
         });
@@ -141,48 +159,70 @@ export const createPasswordHandlers = ({ addToHistory, username }) => {
     if (options.includeNumbers) charTypes.push("numbers");
     if (options.includeSymbols) charTypes.push("symbols");
 
+    // Copy password to clipboard
+    let clipboardMessage = "";
+    try {
+      navigator.clipboard.writeText(password);
+      clipboardMessage = "Password copied to clipboard!";
+    } catch {
+      clipboardMessage =
+        "Could not copy to clipboard (requires HTTPS or localhost)";
+    }
+
+    const passwordMessage = [
+      `Generated Password: ${password}`,
+      "\n",
+      `Length: ${length} characters`,
+      `Character types: ${charTypes.join(", ")}`,
+      `Strength: ${strength}`,
+      options.excludeSimilar
+        ? "Similar characters excluded (i, l, 1, L, o, 0, O)"
+        : "",
+      "",
+      clipboardMessage,
+      "Remember to store this password securely!",
+    ]
+      .filter((line) => line !== "") // Remove empty lines from conditional content
+      .join("\n");
+
     addToHistory({
-      command: `Generated Password: ${password}
-
-Length: ${length} characters
-Character types: ${charTypes.join(", ")}
-Strength: ${strength}
-${
-  options.excludeSimilar
-    ? "Similar characters excluded (i, l, 1, L, o, 0, O)"
-    : ""
-}
-
-⚠️  Remember to store this password securely!`,
+      command: passwordMessage,
       submittedUsername: username,
       isSystemMessage: true,
     });
   };
 
   const handlePasswordHelp = () => {
+    const helpMessage = [
+      "Password Generator Help:",
+      "",
+      "Usage: password <subcommand> [length] [options]",
+      "",
+      "Subcommands:",
+      "  new, gen, generate    Generate a new password",
+      "",
+      "Arguments:",
+      "  [length]              Password length (4-128, default: 12)",
+      "",
+      "Options:",
+      "  --no-uppercase        Exclude uppercase letters (A-Z)",
+      "  --no-lowercase        Exclude lowercase letters (a-z)",
+      "  --no-numbers          Exclude numbers (0-9)",
+      "  --no-symbols          Exclude symbols (!@#$%^&*...)",
+      "  --exclude-similar     Exclude similar characters (i,l,1,L,o,0,O)",
+      "",
+      "Examples:",
+      "  password                          Show this help",
+      "  password new                      Generate 12-character password",
+      "  password gen 16                   Generate 16-character password",
+      "  password new 8 --no-symbols       8 chars, no symbols",
+      "  password gen 20 --exclude-similar 20 chars, exclude similar chars",
+      "",
+      "Default: 12 characters with uppercase, lowercase, numbers, and symbols",
+    ].join("\n");
+
     addToHistory({
-      command: `Password Generator Help:
-
-Usage: password [length] [options]
-
-Arguments:
-  [length]              Password length (4-128, default: 12)
-
-Options:
-  --no-uppercase        Exclude uppercase letters (A-Z)
-  --no-lowercase        Exclude lowercase letters (a-z)
-  --no-numbers          Exclude numbers (0-9)
-  --no-symbols          Exclude symbols (!@#$%^&*...)
-  --exclude-similar     Exclude similar characters (i,l,1,L,o,0,O)
-
-Examples:
-  password                          Generate 12-character password
-  password 16                       Generate 16-character password
-  password 8 --no-symbols           8 chars, no symbols
-  password 20 --exclude-similar     20 chars, exclude similar chars
-  password help                     Show this help
-
-Default: 12 characters with uppercase, lowercase, numbers, and symbols`,
+      command: helpMessage,
       submittedUsername: username,
       isSystemMessage: true,
     });
@@ -190,6 +230,5 @@ Default: 12 characters with uppercase, lowercase, numbers, and symbols`,
 
   return {
     handlePasswordCommand,
-    handlePasswordHelp,
   };
 };

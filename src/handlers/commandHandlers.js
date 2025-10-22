@@ -31,7 +31,7 @@ export const createCommandHandlers = (params) => {
   });
 
   // Create password handlers
-  const { handlePasswordCommand, handlePasswordHelp } = createPasswordHandlers({
+  const { handlePasswordCommand } = createPasswordHandlers({
     addToHistory,
     username,
   });

@@ -109,7 +109,7 @@ function useTerminalLogic() {
     const isCalcCommand = baseCommand === "calc" && argsString;
     const isUsernameCommand = baseCommand === "username" && args.length > 0;
     const isSystemCommand = baseCommand === "system" && args.length > 0;
-    const isPasswordCommand = baseCommand === "password";
+    const isPasswordCommand = baseCommand === "password"; // Allow both with and without args
     const hasExactMatch = commandHandlers[lowerInput];
     const hasSingleWordMatch = commandHandlers[baseCommand];
     const typoCorrection = getTypoCorrection(baseCommand);
