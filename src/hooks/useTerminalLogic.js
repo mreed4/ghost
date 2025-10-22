@@ -34,13 +34,13 @@ function useTerminalLogic() {
   const boundAddToHistory = (entry) => addToHistory(setHistory, entry);
 
   // Create command handlers (only need commandHandlers for typo handlers)
-  const { commandHandlers } = createCommandHandlers(
-    boundAddToHistory,
+  const { commandHandlers } = createCommandHandlers({
+    addToHistory: boundAddToHistory,
     username,
     setUsername,
     setEditingUsername,
-    setHistory
-  );
+    setHistory,
+  });
 
   // Create typo handlers
   const { handleTypoCorrection, handleTypoConfirmation } = createTypoHandlers(
@@ -88,13 +88,13 @@ function useTerminalLogic() {
       handleUsernameCommand,
       handleSystemCommand,
       handleCalculation,
-    } = createCommandHandlers(
-      contextualAddToHistory,
+    } = createCommandHandlers({
+      addToHistory: contextualAddToHistory,
       username,
       setUsername,
       setEditingUsername,
-      setHistory
-    );
+      setHistory,
+    });
 
     // Handle calc command with arguments
     if (baseCommand === "calc" && argsString) {
